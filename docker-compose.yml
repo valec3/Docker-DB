@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  db:
+    image: mysql
+    container_name: MYSQL
+    ports: 
+      - 3306:3306
+    environment: 
+      MYSQL_ROOT_PASSWORD: "toor"
+    volumes: 
+      - ./schemas:/var/lib/mysql
+
+services:
+  mysql-master:
+    image: mysql:latest
+    container_name: mysql-master
+    environment:
+      MYSQL_ROOT_PASSWORD: "toor"
+      MYSQL_USER: "slave"
+      MYSQL_PASSWORD: "123"
+    ports:
+      - "3306:3306"
+    networks:
+      - my_network
+    volumes: 
+      - ./schemas:/var/lib/mysql
+
+  mysql-slave:
+    image: mysql:latest
+    container_name: mysql-slave
+    environment:
+      MYSQL_ROOT_PASSWORD: "toor"
+    ports:
+      - "3307:3306"
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
