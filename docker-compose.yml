@@ -9,7 +9,7 @@ services:
       MYSQL_USER: "slave"
       MYSQL_PASSWORD: "123"
     ports:
-      - "3306:3306"
+      - 4406:3306
     networks:
       - my_network
     volumes: 
@@ -21,7 +21,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: "toor"
     ports:
-      - "3307:3307"
+      - 5506:3306
     networks:
       - my_network
 
