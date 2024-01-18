@@ -6,14 +6,16 @@ services:
     container_name: mysql-master
     environment:
       MYSQL_ROOT_PASSWORD: "toor"
-      MYSQL_USER: "slave"
-      MYSQL_PASSWORD: "123"
+    command: 
+      --default-authentication-plugin=mysql_native_password
+      --sql_mode=NO_ENGINE_SUBSTITUTION
     ports:
       - 4406:3306
     networks:
       - my_network
-    volumes: 
-      - ./schemas:/var/lib/mysql
+    volumes:
+      - ./config/master/mysql.conf.cnf:/etc/mysql/conf.d/mysql.conf.cnf
+      - ./schemas/master:/var/lib/mysql
 
   mysql-slave:
     image: mysql:latest
@@ -22,9 +24,16 @@ services:
       MYSQL_ROOT_PASSWORD: "toor"
     ports:
       - 5506:3306
+    command: 
+      --default-authentication-plugin=mysql_native_password
+      --sql_mode=NO_ENGINE_SUBSTITUTION
+      --log-bin=mysql-bin
+      --server-id=2
     networks:
       - my_network
+    volumes:
+      - ./config/slave/mysql.conf.d:/etc/mysql/conf.d/mysql.conf.cnf
+      - ./schemas/slave:/var/lib/mysql
 
 networks:
   my_network:
-    driver: bridge
